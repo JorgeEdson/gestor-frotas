@@ -79,9 +79,9 @@ public sealed class ServicoDeSimulacaoDeFrota : BackgroundService
     private void RegistrarInicioDaSimulacao(IReadOnlyList<VeiculoSimulado> frota)
     {
         registradorDeEventos.LogInformation(
-            "Simulacao iniciada com {QuantidadeDeVeiculos} veiculos, publicando a cada {IntervaloEmMilissegundos} milissegundos.",
+            "Simulacao iniciada com {QuantidadeDeVeiculos} veiculos, publicando a cada {IntervaloEmMinutos} minutos.",
             frota.Count,
-            opcoesDeSimulacao.IntervaloEntreEnviosEmMilissegundos);
+            opcoesDeSimulacao.IntervaloEntreEnviosEmMinutos);
     }
 
     private void RegistrarTelemetriaPublicada(EventoTelemetria evento)
@@ -136,7 +136,7 @@ public sealed class ServicoDeSimulacaoDeFrota : BackgroundService
     {
         try
         {
-            await Task.Delay(opcoesDeSimulacao.IntervaloEntreEnviosEmMilissegundos, tokenDeEncerramento);
+            await Task.Delay(TimeSpan.FromMinutes(opcoesDeSimulacao.IntervaloEntreEnviosEmMinutos), tokenDeEncerramento);
         }
         catch (OperationCanceledException)
         {

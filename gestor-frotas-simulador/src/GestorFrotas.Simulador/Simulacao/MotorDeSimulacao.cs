@@ -7,7 +7,7 @@ namespace GestorFrotas.Simulador.Simulacao;
 public sealed class MotorDeSimulacao
 {
     private const double QuilometrosPorGrauDeLatitude = 111.0;
-    private const double QuantidadeDeMilissegundosPorHora = 3_600_000.0;
+    private const double QuantidadeDeMinutosPorHora = 60.0;
     private const double VelocidadeMinimaEmQuilometrosPorHora = 0;
     private const double VariacaoMaximaDeVelocidadePorCicloEmQuilometrosPorHora = 20;
     private const double VariacaoMaximaDeDirecaoPorCicloEmRadianos = Math.PI / 4;
@@ -57,7 +57,7 @@ public sealed class MotorDeSimulacao
 
     private void AtualizarPosicaoGeografica(VeiculoSimulado veiculo)
     {
-        var intervaloEmHoras = opcoesDeSimulacao.IntervaloEntreEnviosEmMilissegundos / QuantidadeDeMilissegundosPorHora;
+        var intervaloEmHoras = opcoesDeSimulacao.IntervaloEntreEnviosEmMinutos / QuantidadeDeMinutosPorHora;
         var distanciaPercorridaEmQuilometros = veiculo.VelocidadeEmQuilometrosPorHora * intervaloEmHoras;
         var deslocamentoEmGraus = distanciaPercorridaEmQuilometros / QuilometrosPorGrauDeLatitude;
 

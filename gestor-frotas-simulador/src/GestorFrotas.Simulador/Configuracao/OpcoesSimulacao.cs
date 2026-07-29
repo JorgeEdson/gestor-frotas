@@ -6,7 +6,7 @@ public sealed class OpcoesSimulacao
 
     public int QuantidadeDeVeiculos { get; init; } = 10;
 
-    public int IntervaloEntreEnviosEmMilissegundos { get; init; } = 2000;
+    public int IntervaloEntreEnviosEmMinutos { get; init; } = 2;
 
     public double LatitudeCentralDaOperacao { get; init; } = -23.5613;
 

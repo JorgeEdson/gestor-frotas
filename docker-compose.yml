@@ -67,15 +67,8 @@ services:
       elasticsearch:
         condition: service_started
     volumes:
-      - ./elasticsearch/index-template.json:/tmp/index-template.json:ro
-    entrypoint: ["/bin/sh", "-c"]
-    command: >
-      until curl -s http://elasticsearch:9200 >/dev/null; do
-      echo 'aguardando elasticsearch...'; sleep 5;
-      done;
-      curl -sS -X PUT 'http://elasticsearch:9200/_index_template/telemetria-frota'
-      -H 'Content-Type: application/json'
-      --data-binary @/tmp/index-template.json
+      - ./elasticsearch:/config:ro
+    entrypoint: ["/bin/sh", "/config/aplicar-template.sh"]
     networks:
       - gestor-frotas-rede
 

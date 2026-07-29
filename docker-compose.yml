@@ -1,0 +1,106 @@
+name: gestor-frotas
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:${RABBITMQ_IMAGE_TAG}
+    container_name: gestor-frotas-rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - rabbitmq-dados:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - gestor-frotas-rede
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+    container_name: gestor-frotas-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.license.self_generated.type=basic
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-dados:/usr/share/elasticsearch/data
+    networks:
+      - gestor-frotas-rede
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
+    container_name: gestor-frotas-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - gestor-frotas-rede
+
+  configurador-elasticsearch:
+    image: curlimages/curl:latest
+    container_name: gestor-frotas-configurador-es
+    depends_on:
+      elasticsearch:
+        condition: service_started
+    volumes:
+      - ./elasticsearch/index-template.json:/tmp/index-template.json:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      until curl -s http://elasticsearch:9200 >/dev/null; do
+      echo 'aguardando elasticsearch...'; sleep 5;
+      done;
+      curl -sS -X PUT 'http://elasticsearch:9200/_index_template/telemetria-frota'
+      -H 'Content-Type: application/json'
+      --data-binary @/tmp/index-template.json
+    networks:
+      - gestor-frotas-rede
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${ELASTIC_VERSION}
+    container_name: gestor-frotas-logstash
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "9600:9600"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_started
+      configurador-elasticsearch:
+        condition: service_completed_successfully
+    networks:
+      - gestor-frotas-rede
+
+  simulador:
+    build:
+      context: ./gestor-frotas-simulador
+      dockerfile: Dockerfile
+    container_name: gestor-frotas-simulador
+    environment:
+      - RabbitMq__Host=rabbitmq
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - gestor-frotas-rede
+
+networks:
+  gestor-frotas-rede:
+    driver: bridge
+
+volumes:
+  rabbitmq-dados:
+  elasticsearch-dados:

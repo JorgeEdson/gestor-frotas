@@ -1,0 +1,25 @@
+{
+  "index_patterns": ["telemetria-frota-*"],
+  "priority": 200,
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "momentoDaLeitura": { "type": "date" },
+        "identificadorDoVeiculo": { "type": "keyword" },
+        "categoria": { "type": "keyword" },
+        "descricaoDaCategoria": { "type": "keyword" },
+        "latitude": { "type": "double" },
+        "longitude": { "type": "double" },
+        "localizacao": { "type": "geo_point" },
+        "velocidadeEmQuilometrosPorHora": { "type": "double" },
+        "temperaturaDoMotorEmGrausCelsius": { "type": "double" },
+        "nivelDeCombustivelEmPercentual": { "type": "double" }
+      }
+    }
+  }
+}

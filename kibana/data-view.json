@@ -1,0 +1,8 @@
+{
+  "data_view": {
+    "id": "telemetria-frota",
+    "title": "telemetria-frota-*",
+    "name": "Telemetria da Frota",
+    "timeFieldName": "@timestamp"
+  }
+}

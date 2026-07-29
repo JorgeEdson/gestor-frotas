@@ -1,0 +1,22 @@
+{
+  "name": "Superaquecimento de motor",
+  "rule_type_id": ".es-query",
+  "consumer": "stackAlerts",
+  "schedule": {
+    "interval": "1m"
+  },
+  "params": {
+    "searchType": "esQuery",
+    "index": ["telemetria-frota-*"],
+    "timeField": "@timestamp",
+    "esQuery": "{\"query\":{\"range\":{\"temperaturaDoMotorEmGrausCelsius\":{\"gt\":100}}}}",
+    "timeWindowSize": 5,
+    "timeWindowUnit": "m",
+    "threshold": [0],
+    "thresholdComparator": ">",
+    "size": 100,
+    "aggType": "count",
+    "groupBy": "all"
+  },
+  "actions": []
+}

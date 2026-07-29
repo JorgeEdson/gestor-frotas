@@ -40,10 +40,23 @@ services:
     container_name: gestor-frotas-kibana
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=gestor-frotas-chave-de-encriptacao-demo-0001
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
+    networks:
+      - gestor-frotas-rede
+
+  configurador-kibana:
+    image: curlimages/curl:latest
+    container_name: gestor-frotas-configurador-kibana
+    depends_on:
+      kibana:
+        condition: service_started
+    volumes:
+      - ./kibana:/config:ro
+    entrypoint: ["/bin/sh", "/config/provisionar.sh"]
     networks:
       - gestor-frotas-rede
 
@@ -94,6 +107,21 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    networks:
+      - gestor-frotas-rede
+
+  api:
+    build:
+      context: ./gestor-frotas-api
+      dockerfile: Dockerfile
+    container_name: gestor-frotas-api
+    environment:
+      - Elasticsearch__Uri=http://elasticsearch:9200
+    ports:
+      - "8080:8080"
+    depends_on:
+      elasticsearch:
+        condition: service_started
     networks:
       - gestor-frotas-rede
 

@@ -1,0 +1,22 @@
+{
+  "name": "Excesso de velocidade",
+  "rule_type_id": ".es-query",
+  "consumer": "stackAlerts",
+  "schedule": {
+    "interval": "1m"
+  },
+  "params": {
+    "searchType": "esQuery",
+    "index": ["telemetria-frota-*"],
+    "timeField": "@timestamp",
+    "esQuery": "{\"query\":{\"range\":{\"velocidadeEmQuilometrosPorHora\":{\"gt\":90}}}}",
+    "timeWindowSize": 5,
+    "timeWindowUnit": "m",
+    "threshold": [0],
+    "thresholdComparator": ">",
+    "size": 100,
+    "aggType": "count",
+    "groupBy": "all"
+  },
+  "actions": []
+}

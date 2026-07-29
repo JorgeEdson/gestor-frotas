@@ -1,0 +1,151 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-07-29T12:00:00.000Z",
+  "__export_source": "gestor-frotas",
+  "resources": [
+    {
+      "_id": "wrk_gestor_frotas",
+      "_type": "workspace",
+      "parentId": null,
+      "name": "Gestor de Frotas - API",
+      "description": "Collection para testar a API de Agregações do projeto Gestor de Frotas.",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "parentId": "wrk_gestor_frotas",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:8080",
+        "identificador_do_veiculo": "VEICULO-0001",
+        "categoria": "CargaPesada"
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "identificador_do_veiculo", "categoria"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1
+    },
+    {
+      "_id": "fld_frota",
+      "_type": "request_group",
+      "parentId": "wrk_gestor_frotas",
+      "name": "Frota",
+      "description": "Endpoints de métricas da frota.",
+      "environment": {},
+      "metaSortKey": -1
+    },
+    {
+      "_id": "req_metricas_frota",
+      "_type": "request",
+      "parentId": "fld_frota",
+      "name": "Métricas da frota",
+      "description": "Métricas globais da frota: velocidade média, temperatura máxima, combustível médio, contagem de veículos e leituras.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/frota/metricas",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -100
+    },
+    {
+      "_id": "req_metricas_frota_categoria",
+      "_type": "request",
+      "parentId": "fld_frota",
+      "name": "Métricas da frota (filtro por categoria)",
+      "description": "Mesmas métricas, filtradas por uma categoria de veículo.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/frota/metricas",
+      "body": {},
+      "parameters": [
+        {
+          "name": "categoria",
+          "value": "{{ _.categoria }}"
+        }
+      ],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -90
+    },
+    {
+      "_id": "req_metricas_por_categoria",
+      "_type": "request",
+      "parentId": "fld_frota",
+      "name": "Métricas por categoria",
+      "description": "Métricas agrupadas por categoria de veículo (agregação de termos aninhada).",
+      "method": "GET",
+      "url": "{{ _.base_url }}/frota/metricas-por-categoria",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -80
+    },
+    {
+      "_id": "req_resumo_veiculo",
+      "_type": "request",
+      "parentId": "fld_frota",
+      "name": "Resumo de um veículo",
+      "description": "Resumo de um veículo específico, incluindo janela temporal e distância estimada.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/frota/veiculos/{{ _.identificador_do_veiculo }}/resumo",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -70
+    },
+    {
+      "_id": "fld_diagnostico",
+      "_type": "request_group",
+      "parentId": "wrk_gestor_frotas",
+      "name": "Diagnóstico",
+      "description": "Recursos auxiliares.",
+      "environment": {},
+      "metaSortKey": 0
+    },
+    {
+      "_id": "req_openapi",
+      "_type": "request",
+      "parentId": "fld_diagnostico",
+      "name": "OpenAPI (documento)",
+      "description": "Documento OpenAPI gerado pela API.",
+      "method": "GET",
+      "url": "{{ _.base_url }}/openapi/v1.json",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Accept",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -60
+    }
+  ]
+}

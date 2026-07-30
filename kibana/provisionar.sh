@@ -26,4 +26,10 @@ curl -sS -X POST http://kibana:5601/api/alerting/rule/22222222-2222-4222-8222-22
   --data-binary @/config/alerta-excesso-velocidade.json
 echo ""
 
+echo "importando visualizacoes e dashboard..."
+curl -sS -X POST 'http://kibana:5601/api/saved_objects/_import?overwrite=true' \
+  -H 'kbn-xsrf: true' \
+  --form file=@/config/dashboards.ndjson
+echo ""
+
 echo "provisionamento do kibana concluido."
